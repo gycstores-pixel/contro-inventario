@@ -11,22 +11,18 @@ function toggleCapacitacion() {
 
 async function iniciarSesion() {
   if (intentosFallidos >= 3) {
-    mostrarError("Acceso bloqueado. Recarga la pagina para intentar de nuevo.");
+    mostrarError("Acceso bloqueado. Recarga la pagina.");
     return;
   }
-
   const usuario = document.getElementById('usuario').value.trim();
   const password = document.getElementById('password').value.trim();
-
   if (!usuario || !password) {
     mostrarError("Completa todos los campos.");
     return;
   }
-
   const btn = document.getElementById('btn-login');
   btn.disabled = true;
   btn.textContent = "Verificando...";
-
   if (modoCapacitacion) {
     sessionStorage.setItem('usuario', usuario);
     sessionStorage.setItem('rol', 'vendedor');
@@ -34,12 +30,10 @@ async function iniciarSesion() {
     window.location.href = 'vendedor.html';
     return;
   }
-
   try {
     const url = API_URL + "?accion=login&token=" + TOKEN + "&origen=" + ORIGEN + "&usuario=" + usuario + "&password=" + password;
     const res = await fetch(url);
     const data = await res.json();
-
     if (data.ok) {
       sessionStorage.setItem('usuario', data.usuario);
       sessionStorage.setItem('rol', data.rol);
@@ -56,13 +50,13 @@ async function iniciarSesion() {
       if (restantes > 0) {
         mostrarError("Usuario o contrasena incorrectos. Intentos restantes: " + restantes);
       } else {
-        mostrarError("Acceso bloqueado tras 3 intentos fallidos.");
+        mostrarError("Acceso bloqueado tras 3 intentos.");
       }
       btn.disabled = false;
       btn.textContent = "Ingresar";
     }
   } catch (err) {
-    mostrarError("Error de conexion. Verifica tu internet.");
+    mostrarError("Error de conexion.");
     btn.disabled = false;
     btn.textContent = "Ingresar";
   }
